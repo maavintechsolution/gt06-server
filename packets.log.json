@@ -1,0 +1,6 @@
+{"raw":"78780d010391608033600100018cdd0d0a","type":"login","length":17,"timestamp":"2025-07-14T06:21:30.721Z"}
+{"raw":"78781f1212060b0b1c2c0c034d5b890c1e0b0c0004000100000001c6a20d0a","type":"gps","length":31,"timestamp":"2025-07-14T06:21:30.743Z"}
+{"raw":"78780d010391608033600100018cdd0d0a","type":"login","length":17,"timestamp":"2025-07-14T06:24:14.328Z"}
+{"raw":"78781f1212060b0b1c2c0c034d5b890c1e0b0c0004000100000001c6a20d0a","type":"gps","length":31,"timestamp":"2025-07-14T06:24:14.356Z","datetime":"2018-06-11 11:28:44","latitude":111.968335,"longitude":1277.3737305555555,"speed":12,"courseStatus":4}
+{"raw":"78780d010391608033600100018cdd0d0a","type":"login","length":17,"timestamp":"2025-07-14T06:25:23.034Z","imei":"391608033600100"}
+{"raw":"78781f1212060b0b1c2c0c034d5b890c1e0b0c0004000100000001c6a20d0a","type":"gps","length":31,"timestamp":"2025-07-14T06:25:23.050Z","datetime":"2018-06-11 11:28:44","latitude":111.968335,"longitude":1277.3737305555555,"speed":12,"courseStatus":4}
