@@ -82,6 +82,10 @@ function parseLoginPacket(buffer) {
 
 const server = net.createServer(socket => {
   socket.on('data', data => {
+
+    console.log('hello socket');
+    console.log(data);
+    // Log raw packet data
     const packet = parsePacket(data);
     fs.appendFileSync(LOG_FILE, JSON.stringify(packet) + '\n');
     console.log('Received:', packet);
