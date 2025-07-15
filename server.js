@@ -80,6 +80,34 @@ function parseLoginPacket(buffer) {
   return { imei };
 }
 
+function calcCrc16(buffer, start, end) {
+  // Standard CRC-16-CCITT (0x1021, initial 0x0000)
+  let crc = 0;
+  for (let i = start; i < end; i++) {
+    crc ^= (buffer[i] << 8);
+    for (let j = 0; j < 8; j++) {
+      if ((crc & 0x8000) !== 0) {
+        crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+      } else {
+        crc = (crc << 1) & 0xFFFF;
+      }
+    }
+  }
+  return crc;
+}
+
+function sendLoginResponse(socket, loginBuffer) {
+  // Serial number is 2 bytes before CRC (length-6, length-5)
+  const serialHigh = loginBuffer[loginBuffer.length - 6];
+  const serialLow = loginBuffer[loginBuffer.length - 5];
+  const resp = Buffer.from([0x78, 0x78, 0x05, 0x01, serialHigh, serialLow, 0x00, 0x00, 0x0D, 0x0A]);
+  // CRC over 0x05 0x01 [serialHigh] [serialLow]
+  const crc = calcCrc16(resp, 2, 6);
+  resp[6] = (crc >> 8) & 0xFF;
+  resp[7] = crc & 0xFF;
+  socket.write(resp);
+}
+
 const server = net.createServer(socket => {
   socket.on('data', data => {
 
@@ -91,8 +119,7 @@ const server = net.createServer(socket => {
     console.log('Received:', packet);
     // Respond to login/heartbeat if needed
     if (packet.type === 'login') {
-      // Example: send login response (not real CRC)
-      socket.write(Buffer.from('7878050100018A0D0A', 'hex'));
+      sendLoginResponse(socket, data);
     } else if (packet.type === 'heartbeat') {
       socket.write(Buffer.from('7878051300019D0D0A', 'hex'));
     }
