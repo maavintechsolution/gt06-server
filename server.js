@@ -10,7 +10,7 @@ function getPacketType(buffer) {
   const type = buffer[3];
   switch (type) {
     case 0x01: return 'login';
-    case 0x12: return 'gps';
+    case 0x22: return 'gps';
     case 0x13: return 'status';
     case 0x16: return 'alarm';
     case 0x22: return 'gps'; // treat 0x22 as GPS
