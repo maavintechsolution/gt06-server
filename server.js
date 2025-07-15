@@ -10,7 +10,6 @@ function getPacketType(buffer) {
   const type = buffer[3];
   switch (type) {
     case 0x01: return 'login';
-    case 0x22: return 'gps';
     case 0x13: return 'status';
     case 0x16: return 'alarm';
     case 0x22: return 'gps'; // treat 0x22 as GPS
@@ -47,8 +46,8 @@ function parsePacket(buffer) {
 
 // Helper: Parse GPS packet details
 function parseGpsPacket(buffer) {
-  // GPS info starts at index 4 (after protocol number)
-  // Date/time: 6 bytes (YY MM DD HH mm ss)
+  // For protocol 0x22, GT06 extended GPS info
+  // Date/time: 6 bytes (YY MM DD HH mm ss) at index 4-9
   const year = 2000 + buffer[4];
   const month = buffer[5];
   const day = buffer[6];
@@ -56,16 +55,18 @@ function parseGpsPacket(buffer) {
   const minute = buffer[8];
   const second = buffer[9];
   const datetime = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
-  // Latitude (4 bytes), Longitude (4 bytes)
-  const latRaw = buffer.readUInt32BE(10);
-  const lngRaw = buffer.readUInt32BE(14);
+  // Satellites: buffer[10] (high nibble = GPS, low nibble = GSM)
+  const satellites = buffer[10] & 0x0F;
+  // Latitude (4 bytes, 11-14), Longitude (4 bytes, 15-18)
+  const latRaw = buffer.readUInt32BE(11);
+  const lngRaw = buffer.readUInt32BE(15);
   const latitude = latRaw / 1800000;
   const longitude = lngRaw / 1800000;
-  // Speed (1 byte)
-  const speed = buffer[18];
-  // Course & status (2 bytes)
-  const courseStatus = buffer.readUInt16BE(19);
-  return { datetime, latitude, longitude, speed, courseStatus };
+  // Speed (1 byte, 19)
+  const speed = buffer[19];
+  // Course & status (2 bytes, 20-21)
+  const courseStatus = buffer.readUInt16BE(20);
+  return { datetime, satellites, latitude, longitude, speed, courseStatus };
 }
 
 // Helper: Parse login packet details
