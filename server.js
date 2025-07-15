@@ -13,6 +13,7 @@ function getPacketType(buffer) {
     case 0x12: return 'gps';
     case 0x13: return 'status';
     case 0x16: return 'alarm';
+    case 0x22: return 'gps'; // treat 0x22 as GPS
     case 0x26: return 'heartbeat';
     default: return 'unknown';
   }
